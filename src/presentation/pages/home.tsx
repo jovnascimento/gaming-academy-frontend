@@ -56,15 +56,12 @@ export const Home = () => {
                         alt="random"
                     />
                     <CardContent sx={{ flexGrow: 1 }}>
-                        <Typography gutterBottom variant="h5" component="h2">
-                            Nome do curso
-                        </Typography>
-                        <Typography>
-                            Descrição do curso
+                        <Typography gutterBottom variant="h5" component="h2" align="center">
+                            Unity
                         </Typography>
                     </CardContent>
                     <CardActions>
-                        <Button size="small" 
+                        <Button size="small"
                         sx={{
                             borderWidth: 2,
                             borderStyle: "solid",

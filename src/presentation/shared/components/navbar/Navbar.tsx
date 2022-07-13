@@ -5,6 +5,8 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import { Button, Modal } from "@mui/material";
 import SignIn from "../signin/SignIn";
+import { Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import Assets from "../../assets";
 import SignUp from "../signup/SignUp";
@@ -62,11 +64,13 @@ export const Navbar = () => {
             }}
           >
             <Box sx={{ flexGrow: 1 }}>
-              <img
-                src={Assets.Logo}
-                alt="Gaming Academy"
-                style={{ height: 42 }}
-              />
+              <Button component={Link} to="/">
+                <img
+                  src={Assets.Logo}
+                  alt="Gaming Academy"
+                  style={{ height: 42 }}
+                />
+              </Button>
             </Box>
             <Box sx={{ flexGrow: 1 }} />
 
