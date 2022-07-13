@@ -102,11 +102,21 @@ export const Navbar = () => {
                   Bem-vindo, {appContext?.user?.name}
                 </Box>
 
+                {appContext.type === "aluno" && (
+                  <Button
+                    sx={{ marginLeft: "15px" }}
+                    component={Link}
+                    to="/user-page"
+                  >
+                    Meu Perfil
+                  </Button>
+                )}
+
                 {appContext.type === "instrutor" && (
                   <Button
                     sx={{ marginLeft: "15px" }}
-                    component={Link} 
-                    to="/add-course" 
+                    component={Link}
+                    to="/add-course"
                   >
                     Cadastrar Curso
                   </Button>
