@@ -7,8 +7,10 @@ import {
   RegistrationResponse,
 } from "./IUsersWebClient";
 
+import env from '../../environment'
+
 export class UsersWebClient implements IUsersWebClient {
-  baseUrl: string = `${process.env.REACT_APP_API_URL}/user/`;
+  baseUrl: string = `${env.API_URL}/user/`;
   axios: Axios;
 
   constructor() {

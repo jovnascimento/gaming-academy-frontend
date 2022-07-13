@@ -3,8 +3,10 @@ import { Course } from "../../domain/models/Course";
 import { ICoursesWebClient } from "./ICoursesWebClient";
 import { IServerResponse } from "./IServerResponse";
 
+import env from '../../environment'
+
 export class CoursesWebClient implements ICoursesWebClient {
-  baseUrl: string = `${process.env.REACT_APP_API_URL}/course/`;
+  baseUrl: string = `${env.API_URL}/course/`;
   axios: Axios;
 
   constructor() {
