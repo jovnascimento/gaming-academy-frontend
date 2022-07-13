@@ -103,6 +103,11 @@ export const Navbar = () => {
                   onClick={() => {
                     appContext.setToken(null);
                     appContext.setUser(null);
+                    appContext.setType(null);
+
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
+                    localStorage.removeItem("type");
                   }}
                 >
                   Logout

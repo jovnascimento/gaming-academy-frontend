@@ -44,6 +44,11 @@ export default function SignIn(props: SignInProps) {
     const formEmail = data.get("email")?.toString() ?? "";
     const formPassword = data.get("password")?.toString() ?? "";
 
+    if (!userType) {
+      alert("Selecione o tipo de usuário");
+      return;
+    }
+
     const emailValidated = validateEmail(formEmail);
     if (!emailValidated) {
       alert("E-mail inválido");
