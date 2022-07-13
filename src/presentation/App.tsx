@@ -1,24 +1,17 @@
-import React from 'react';
-import './App.css';
+import { BrowserRouter } from "react-router-dom";
+import { AppRoutes } from "./routes";
+import { Navbar } from "./shared/components";
+import { AppThemeProvider, AppContextProvider } from "./shared/contexts";
 
-function App() {
+export const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AppContextProvider>
+      <AppThemeProvider>
+        <BrowserRouter>
+          <Navbar />
+          <AppRoutes />
+        </BrowserRouter>
+      </AppThemeProvider>
+    </AppContextProvider>
   );
-}
-
-export default App;
+};

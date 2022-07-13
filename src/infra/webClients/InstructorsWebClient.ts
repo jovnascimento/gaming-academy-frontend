@@ -1,5 +1,4 @@
 import axios, { Axios } from "axios";
-import { injectable } from "inversify";
 import { Instructor } from "../../domain/models/Instructor";
 import {
   IInstructorsWebClient,
@@ -8,9 +7,8 @@ import {
   RegistrationResponse,
 } from "./IInstructorsWebClient";
 
-@injectable()
 export class InstructorsWebClient implements IInstructorsWebClient {
-  baseUrl: string = "http://localhost:3000/api/v1/instructor/";
+  baseUrl: string = `${process.env.REACT_APP_API_URL}/instructor/`;
   axios: Axios;
 
   constructor() {

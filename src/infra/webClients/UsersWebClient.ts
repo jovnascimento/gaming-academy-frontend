@@ -1,5 +1,4 @@
 import axios, { Axios } from "axios";
-import { injectable } from "inversify";
 import { User } from "../../domain/models/User";
 import {
   AutenticateResponse,
@@ -8,9 +7,8 @@ import {
   RegistrationResponse,
 } from "./IUsersWebClient";
 
-@injectable()
 export class UsersWebClient implements IUsersWebClient {
-  baseUrl: string = "http://localhost:3000/api/v1/user/";
+  baseUrl: string = `${process.env.REACT_APP_API_URL}/user/`;
   axios: Axios;
 
   constructor() {
@@ -23,12 +21,12 @@ export class UsersWebClient implements IUsersWebClient {
   }
 
   async login(email: string, password: string): Promise<LoginResponse> {
-    const response = await this.axios.post("/me", { email, password });
+    const response = await this.axios.post("/login", { email, password });
     return response.data;
   }
 
   async authenticate(token: string): Promise<AutenticateResponse> {
-    const response = await this.axios.get("/authenticate", {
+    const response = await this.axios.get("/me", {
       headers: {
         Authorization: token,
       },
@@ -36,7 +34,7 @@ export class UsersWebClient implements IUsersWebClient {
     return response.data;
   }
 
-  async registration(user: User): Promise<RegistrationResponse> {
+  async registration(user: Partial<User>): Promise<RegistrationResponse> {
     const response = await this.axios.post("/registration", user);
     return response.data;
   }
