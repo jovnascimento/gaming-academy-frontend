@@ -9,6 +9,8 @@ import Container from "@mui/material/Container";
 import { UsersWebClient } from "../../../../infra/webClients/UsersWebClient";
 import { validateEmail } from "../../../../domain/validators/Email/EmailValidator";
 import { validatePassword } from "../../../../domain/validators/Password/PasswordValidator";
+import { FormControlLabel, FormLabel, Radio, RadioGroup } from "@mui/material";
+import { InstructorsWebClient } from "../../../../infra/webClients/InstructorsWebClient";
 
 function Copyright(props: any) {
   return (
@@ -27,6 +29,12 @@ interface SignUpProps {
 export default function SignUp(props: SignUpProps) {
   const { onFormFinish } = props;
 
+  const [userType, setUserType] = React.useState<string | null>(null);
+
+  const handleUserTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUserType((event.target as HTMLInputElement).value);
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -35,6 +43,11 @@ export default function SignUp(props: SignUpProps) {
     const formEmail = data.get("email")?.toString() ?? "";
     const formPassword = data.get("password")?.toString() ?? "";
     const formConfirmPassword = data.get("confirmPassword")?.toString() ?? "";
+
+    if (!userType) {
+      alert("Selecione o tipo de usuário");
+      return;
+    }
 
     if (!formName) {
       alert("Nome é obrigatório");
@@ -74,16 +87,34 @@ export default function SignUp(props: SignUpProps) {
       return;
     }
 
-    const usersWebClient = new UsersWebClient();
-    const registrationResponse = await usersWebClient.registration({
-      name: formName,
-      email: formEmail,
-      password: formPassword,
-    });
+    if (userType === "aluno") {
+      const usersWebClient = new UsersWebClient();
+      const registrationResponse = await usersWebClient.registration({
+        name: formName,
+        email: formEmail,
+        password: formPassword,
+      });
 
-    if (!registrationResponse.status) {
-      alert("Usuário já existe");
-      return;
+      if (!registrationResponse.status) {
+        alert("Usuário já existe");
+        return;
+      }
+    }
+
+    if (userType === "instrutor") {
+      const instructorsWebClient = new InstructorsWebClient();
+      const registrationResponse = await instructorsWebClient.registration({
+        name: formName,
+        email: formEmail,
+        password: formPassword,
+        bio: "Professor da Gaming Academy com anos de experiência no desenvolvimento de jogos",
+        avatar: "https://i.pravatar.cc/300",
+      });
+
+      if (!registrationResponse.status) {
+        alert("Usuário já existe");
+        return;
+      }
     }
 
     alert("Usuário cadastrado com sucesso");
@@ -94,7 +125,7 @@ export default function SignUp(props: SignUpProps) {
     <Container component="main" maxWidth="xs">
       <Box
         sx={{
-          marginTop: 8,
+          marginTop: 2,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -106,6 +137,22 @@ export default function SignUp(props: SignUpProps) {
         <Typography component="h1" variant="h5">
           Crie sua conta
         </Typography>
+        <Box sx={{ margin: "30px 0 5px 0", width: "100%" }}>
+          <FormLabel>Tipo de usuário</FormLabel>
+          <RadioGroup
+            row
+            name="type"
+            value={userType}
+            onChange={handleUserTypeChange}
+          >
+            <FormControlLabel value="aluno" control={<Radio />} label="Aluno" />
+            <FormControlLabel
+              value="instrutor"
+              control={<Radio />}
+              label="Instrutor"
+            />
+          </RadioGroup>
+        </Box>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"

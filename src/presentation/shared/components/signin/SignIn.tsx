@@ -9,6 +9,8 @@ import Container from "@mui/material/Container";
 import { validateEmail } from "../../../../domain/validators/Email/EmailValidator";
 import { UsersWebClient } from "../../../../infra/webClients/UsersWebClient";
 import { useAppContext } from "../../contexts";
+import { FormControlLabel, FormLabel, Radio, RadioGroup } from "@mui/material";
+import { InstructorsWebClient } from "../../../../infra/webClients/InstructorsWebClient";
 
 function Copyright(props: any) {
   return (
@@ -29,6 +31,12 @@ export default function SignIn(props: SignInProps) {
 
   const appContext = useAppContext();
 
+  const [userType, setUserType] = React.useState<string | null>(null);
+
+  const handleUserTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUserType((event.target as HTMLInputElement).value);
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -42,24 +50,54 @@ export default function SignIn(props: SignInProps) {
       return;
     }
 
-    const usersWebClient = new UsersWebClient();
-    const loginResponse = await usersWebClient.login(formEmail, formPassword);
-    
-    if(!loginResponse.status) {
-      alert("Usuário ou senha inválidos");
-      return;
+    if (userType === "aluno") {
+      const usersWebClient = new UsersWebClient();
+      const loginResponse = await usersWebClient.login(formEmail, formPassword);
+
+      if (!loginResponse.status) {
+        alert("Usuário ou senha inválidos");
+        return;
+      }
+
+      if (!loginResponse.data) {
+        alert("Usuário ou senha inválidos");
+        return;
+      }
+
+      localStorage.setItem("token", loginResponse.data.token);
+      localStorage.setItem("user", JSON.stringify(loginResponse.data.user));
+      localStorage.setItem("type", "aluno");
+
+      appContext.setToken(loginResponse.data.token);
+      appContext.setUser(loginResponse.data.user);
+      appContext.setType("aluno");
     }
 
-    if(!loginResponse.data) {
-      alert("Usuário ou senha inválidos");
-      return;
+    if (userType === "instrutor") {
+      const instructorsWebClient = new InstructorsWebClient();
+      const loginResponse = await instructorsWebClient.login(
+        formEmail,
+        formPassword
+      );
+
+      if (!loginResponse.status) {
+        alert("Usuário ou senha inválidos");
+        return;
+      }
+
+      if (!loginResponse.data) {
+        alert("Usuário ou senha inválidos");
+        return;
+      }
+
+      localStorage.setItem("token", loginResponse.data.token);
+      localStorage.setItem("user", JSON.stringify(loginResponse.data.user));
+      localStorage.setItem("type", "instrutor");
+
+      appContext.setToken(loginResponse.data.token);
+      appContext.setUser(loginResponse.data.user);
+      appContext.setType("instrutor");
     }
-    
-    localStorage.setItem("token", loginResponse.data.token);
-    localStorage.setItem("user", JSON.stringify(loginResponse.data.user));
-    
-    appContext.setToken(loginResponse.data.token);
-    appContext.setUser(loginResponse.data.user);
 
     onFormFinish();
   };
@@ -80,6 +118,22 @@ export default function SignIn(props: SignInProps) {
         <Typography component="h1" variant="h5">
           Login
         </Typography>
+        <Box sx={{ margin: "30px 0 5px 0", width: "100%" }}>
+          <FormLabel>Tipo de usuário</FormLabel>
+          <RadioGroup
+            row
+            name="type"
+            value={userType}
+            onChange={handleUserTypeChange}
+          >
+            <FormControlLabel value="aluno" control={<Radio />} label="Aluno" />
+            <FormControlLabel
+              value="instrutor"
+              control={<Radio />}
+              label="Instrutor"
+            />
+          </RadioGroup>
+        </Box>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"

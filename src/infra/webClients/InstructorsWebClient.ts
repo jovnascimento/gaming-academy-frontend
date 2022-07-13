@@ -21,12 +21,12 @@ export class InstructorsWebClient implements IInstructorsWebClient {
   }
 
   async login(email: string, password: string): Promise<LoginResponse> {
-    const response = await this.axios.post("/me", { email, password });
+    const response = await this.axios.post("/login", { email, password });
     return response.data;
   }
 
   async authenticate(token: string): Promise<AutenticateResponse> {
-    const response = await this.axios.get("/authenticate", {
+    const response = await this.axios.get("/me", {
       headers: {
         Authorization: token,
       },
@@ -34,7 +34,7 @@ export class InstructorsWebClient implements IInstructorsWebClient {
     return response.data;
   }
 
-  async registration(user: Instructor): Promise<RegistrationResponse> {
+  async registration(user: Partial<Instructor>): Promise<RegistrationResponse> {
     const response = await this.axios.post("/registration", user);
     return response.data;
   }
