@@ -78,6 +78,5 @@ export const Home = () => {
                 </Grid>
             </Container>
         </Box>
-        
     )
 }
