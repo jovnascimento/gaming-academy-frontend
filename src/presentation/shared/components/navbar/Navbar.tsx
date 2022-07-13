@@ -5,7 +5,6 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import { Button, Modal } from "@mui/material";
 import SignIn from "../signin/SignIn";
-import { Navigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 import Assets from "../../assets";
@@ -102,6 +101,17 @@ export const Navbar = () => {
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   Bem-vindo, {appContext?.user?.name}
                 </Box>
+
+                {appContext.type === "instrutor" && (
+                  <Button
+                    sx={{ marginLeft: "15px" }}
+                    component={Link} 
+                    to="/add-course" 
+                  >
+                    Cadastrar Curso
+                  </Button>
+                )}
+
                 <Button
                   sx={{ marginLeft: "15px" }}
                   onClick={() => {

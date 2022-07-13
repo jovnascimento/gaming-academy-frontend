@@ -2,14 +2,14 @@ import { Instructor } from "./Instructor";
 import { Lection } from "./Lection";
 
 export interface Course {
-  id: string;
-  created_at: Date;
-  updated_at: Date;
-  instructor: Instructor;
+  _id?: string;
+  created_at?: Date;
+  updated_at?: Date;
+  instructor?: Instructor | string;
   name: string;
   description: string;
   image: string;
   duration: number;
 
-  lections: Lection[];
+  lections?: Lection[];
 }
