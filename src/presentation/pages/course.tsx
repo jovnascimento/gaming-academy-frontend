@@ -20,13 +20,17 @@ import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { Instructor } from "../../domain/models/Instructor";
 import Vimeo from "@u-wave/react-vimeo";
+import { useAppContext } from "../shared/contexts"
+import SignUp from "../shared/components/signup/SignUp";
 
 export const CoursePage = () => {
   const { id } = useParams();
+  const appContext = useAppContext();
 
   const [course, setCourse] = useState<Course>();
   const [subscripted, setSubscripted] = useState(false);
   const [activeVideoModal, setActiveVideoModal] = useState<string | null>(null);
+  const [signupModalOpen, setSignupModalOpen] = useState(false);
 
   useEffect(() => {
     const run = async () => {
@@ -67,6 +71,17 @@ export const CoursePage = () => {
     p: 4,
   };
 
+  const modalStyleSignup = {
+    position: "absolute" as "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 600,
+    bgcolor: "background.paper",
+    boxShadow: 24,
+    p: 4,
+  };
+
   return (
     <>
       <Modal
@@ -79,6 +94,18 @@ export const CoursePage = () => {
           <Vimeo video={activeVideoModal as string} autoplay responsive />
         </Box>
       </Modal>
+
+      <Modal
+        open={signupModalOpen}
+        onClose={() => setSignupModalOpen(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyleSignup}>
+          <SignUp onFormFinish={() => setSignupModalOpen(false)} />
+        </Box>
+      </Modal>
+
       <Box
         sx={{
           paddingBottom: 8,
@@ -108,17 +135,35 @@ export const CoursePage = () => {
           {course.description}
         </Typography>
 
-        <Button
-          variant={subscripted ? "outlined" : "contained"}
-          color="primary"
-          size="large"
-          sx={{ margin: "15px auto 50px auto", display: "block" }}
-          onClick={() => {
-            setSubscripted(true);
-          }}
-        >
-          {subscripted ? "Inscrito" : "Inscrever-se"}
-        </Button>
+        {!appContext.token && (
+          <>
+            <Button
+              variant={subscripted ? "outlined" : "contained"}
+              color="primary"
+              size="large"
+              sx={{ margin: "15px auto 50px auto", display: "block" }}
+              onClick={() => setSignupModalOpen(true)}
+            >
+              Inscrever-se
+            </Button>
+          </>
+        )}
+
+        {appContext.token && (
+          <>
+            <Button
+              variant={subscripted ? "outlined" : "contained"}
+              color="primary"
+              size="large"
+              sx={{ margin: "15px auto 50px auto", display: "block" }}
+              onClick={() => {
+                setSubscripted(true);
+              }}
+            >
+              {subscripted ? "Inscrito" : "Inscrever-se"}
+            </Button>
+          </>
+        )}
 
         <Grid container spacing={2}>
           <Grid item xs={6}>
