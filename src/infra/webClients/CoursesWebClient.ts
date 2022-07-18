@@ -3,7 +3,8 @@ import { Course } from "../../domain/models/Course";
 import { ICoursesWebClient } from "./ICoursesWebClient";
 import { IServerResponse } from "./IServerResponse";
 
-import env from '../../environment'
+import env from "../../environment";
+import { User } from "../../domain/models/User";
 
 export class CoursesWebClient implements ICoursesWebClient {
   baseUrl: string = `${env.API_URL}/course/`;
@@ -40,6 +41,19 @@ export class CoursesWebClient implements ICoursesWebClient {
 
   async deleteCourse(id: string): Promise<IServerResponse<Course>> {
     const response = await this.axios.delete(`/delete/${id}`);
+    return response.data;
+  }
+
+  async getCoursesByUser(userId: string): Promise<IServerResponse<Course[]>> {
+    const response = await this.axios.get(`/getByUser/${userId}`);
+    return response.data;
+  }
+
+  async addCourseToUser(
+    userId: string,
+    courseId: string
+  ): Promise<IServerResponse<User>> {
+    const response = await this.axios.post(`/addToUser/${courseId}/${userId}`);
     return response.data;
   }
 }

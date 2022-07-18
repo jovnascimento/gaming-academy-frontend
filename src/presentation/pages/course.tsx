@@ -20,7 +20,7 @@ import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { Instructor } from "../../domain/models/Instructor";
 import Vimeo from "@u-wave/react-vimeo";
-import { useAppContext } from "../shared/contexts"
+import { useAppContext } from "../shared/contexts";
 import SignUp from "../shared/components/signup/SignUp";
 
 export const CoursePage = () => {
@@ -55,9 +55,40 @@ export const CoursePage = () => {
     }
   }, [id]);
 
+  useEffect(() => {
+    if (!appContext.user) return;
+
+    const coursesWebClient = new CoursesWebClient();
+    coursesWebClient.getCoursesByUser(appContext.user._id as string).then((course) => {
+      setSubscripted(course.data.some((c) => c._id === id));
+    });
+  }, [appContext.user, id]);
+
   if (!course) {
     return null;
   }
+
+  const handleAddCourseToUser = async () => {
+    if (!appContext.user) {
+      setSignupModalOpen(true);
+      return;
+    }
+
+    if(subscripted) return;
+
+    const coursesWebClient = new CoursesWebClient();
+    const addResponse = await coursesWebClient.addCourseToUser(
+      appContext.user._id as string,
+      course._id as string
+    );
+
+    if (!addResponse.status) {
+      alert("Erro ao adicionar curso ao usuário");
+      return;
+    }
+
+    setSubscripted(true);
+  };
 
   const modalStyle = {
     position: "absolute" as "absolute",
@@ -135,30 +166,14 @@ export const CoursePage = () => {
           {course.description}
         </Typography>
 
-        {!appContext.token && (
+        {!(appContext.type === "instrutor") && (
           <>
             <Button
               variant={subscripted ? "outlined" : "contained"}
               color="primary"
               size="large"
               sx={{ margin: "15px auto 50px auto", display: "block" }}
-              onClick={() => setSignupModalOpen(true)}
-            >
-              Inscrever-se
-            </Button>
-          </>
-        )}
-
-        {appContext.token && (
-          <>
-            <Button
-              variant={subscripted ? "outlined" : "contained"}
-              color="primary"
-              size="large"
-              sx={{ margin: "15px auto 50px auto", display: "block" }}
-              onClick={() => {
-                setSubscripted(true);
-              }}
+              onClick={() => handleAddCourseToUser()}
             >
               {subscripted ? "Inscrito" : "Inscrever-se"}
             </Button>

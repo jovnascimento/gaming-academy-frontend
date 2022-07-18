@@ -11,8 +11,8 @@ import {
 import Box from "@mui/material/Box";
 import { useAppContext } from "../shared/contexts";
 import PersonIcon from "@mui/icons-material/Person";
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import CastForEducationIcon from '@mui/icons-material/CastForEducation';
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import CastForEducationIcon from "@mui/icons-material/CastForEducation";
 import Assets from "./../shared/assets";
 import { useEffect, useState } from "react";
 import { CoursesWebClient } from "../../infra/webClients/CoursesWebClient";
@@ -25,11 +25,13 @@ export const UserPage = () => {
   const [courses, setCourses] = useState<Course[]>([]);
 
   useEffect(() => {
+    if(!appContext.user) return
+
     const coursesWebClient = new CoursesWebClient();
-    coursesWebClient.getCourses().then((course) => {
-      setCourses(course.data);
+    coursesWebClient.getCoursesByUser(appContext.user._id as string).then((course) => {
+      setCourses(course.data || []);
     });
-  }, []);
+  }, [appContext.user]);
 
   return (
     <Box
