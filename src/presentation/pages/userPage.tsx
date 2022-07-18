@@ -48,7 +48,7 @@ export const UserPage = () => {
           <div style={{ position: "relative" }}>
             <CardMedia
               style={{
-                height: "250px",
+                height: "249px",
               }}
               component="img"
               src={Assets.BG}
